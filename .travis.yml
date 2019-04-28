@@ -18,7 +18,7 @@ deploy:
       secure: V0hcPJTA3iOq7G4w2JZqySHkMlBdNy+5D4FU7+P0Lwxaiw9Q/TKrCI5yOsCeAez21Gia+Cq4M6JkpsVyLDUfV20sIaks5BdvGaFlfL7gyWqyNIx2eA+QBkyly6vd3hkblUeE42fJLe/7tvtPJiFSICO8Ktof/fNvdp9DXhhFcJt9frCK6C6V1FYFDfV5sxGNQ9PzqxFlWoIKCISET8UiOPAAeeVWSi9g8SEPp9zNqNnrMnrQDLVsEdAnFCOK/3Mxac75dxmpkCX1g8Si0HvVRbsdnkv1njYUb2imeQOZoWH30IWGtRJGki9+frMHxBEdoUAs+r9jFkbRnTGlCDVzLO4R6mUlRmcVPI++BrsLWvpcKgDqXXZMkKNalvk4VNM9CSBsnPz0bY/++6VI90h5giBgXAbTZ9qdYhe6g9M0B+3ILrzqPDW+5oVuh/ICyn5GirlFojPSJQKzXBwYmvooYF+qfmoOGqyfXPLfY6JDI1jqk8mxjCGAqmmzlvBCFLvIes3i5pHBq8lwtEh/7LKCCqQpzY/ScnPULhWokaNgx7t94xFQGtW2yHp7obxRjVXBoU27Cukoafsg28mBMEibuFr07F2sSS8f3SHfzQBYv2v7Zo9OOX+s6/ZpFbSwvUBbPLhiiUWX7bRtlKrr01qgkt2QeDVdOS+/3cG8sTCC6tU=
     on:
       tags: true
-      repo: pkerpedjiev/higlass-labelled-points-tracks
+      repo: higlass/higlass-labelled-points-track
       branch: master
   - provider: releases
     skip_cleanup: true
@@ -27,4 +27,4 @@ deploy:
       secure: 05dpPKrCrrNqIvzlLiABe2BLcs8RhtDamaeKD22OZl9we2zUH0DKunIZmKz8Qz+Xzn3xGufoKzhqCXK6abrwH5C1rVv2U8m2XdV6n47pJWKba4oVR1DxcvOGQSgQf7CgzDE4TQgDlrXSBG26xCOSurTEX6FC8zfbzfF/UgxGIcz2K8Y8ggoexl+5RHqFpj7H9l5K9F4+APubqRI+9Fjq/1vQmdoRwbtL5iwFtCecJDkN4EyHD7JFcAj3fZ5yBquysZ5XB48SpQBqiea/3TfblKa1xviCjTS7XTJqJK3T0JEmn4tMzBq8LoGXtEiUm9jRsA4yVyoIdOp8LlpIpFcsEUjyVEsRrL6Nvv0O5efsltqDrQIuYP76NCT5Oqncsgn27KBcHeUFlT0ePuq+Q3bJNSTExwtahPUCxhD34nul9z5SQhzUEzVG5AGewM6Ar/Lw2Yav19X+S9iBSHmvMyc/wnK6db+SYtrx98GoJn+4/TCVnQm56qXWAkrK1YjKh+h43JI8ZEtnFHXl2/Kz+7sfxmfOblraawdOjuho+JCFnu8kBn0dGTv84bYqsScuoDqGYAj/VWktaZryvb1CHJjSLym0pRZmXDz/J+qQYNx2YuY/dxzQjK4WZIBOgW+EnldGYOWNzFekTC4fjfJK6y6PK6gEfwBhONn2ccNaSCgi1ho=
     file: dist.zip
     on:
-      repo: pkerpedjiev/higlass-labelled-points-tracks
+      repo: higlass/higlass-labelled-points-track
