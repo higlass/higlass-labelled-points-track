@@ -11,14 +11,11 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
   class LabelledPointsTrackClass extends HGC.tracks.Annotations2dTrack {
     constructor(
-      scene, trackConfig, dataConfig, handleTilesetInfoReceived, animate,
+      context, options,
     ) {
       super(
-        scene,
-        dataConfig,
-        handleTilesetInfoReceived,
-        trackConfig.options,
-        animate,
+        context,
+        options,
       );
 
       this.texts = {};
@@ -45,11 +42,14 @@ const LabelledPointsTrack = (HGC, ...args) => {
     }
 
     initTile(tile) {
-      // console.log('initTile:', tile);
-      for (const data of tile.tileData) {
-        if (!('uid' in data)) {
-          data.uid = slugid.nice();
-        }
+      try {
+        for (const data of tile.tileData) {
+            if (!('uid' in data)) {
+              data.uid = slugid.nice();
+            }
+          }
+        } catch (err) {
+          console.warn('tile.tileData is not iterable:', tile.tileData);
       }
     }
 
@@ -87,15 +87,25 @@ const LabelledPointsTrack = (HGC, ...args) => {
     }
 
     destroyTile(tile) {
-      for (const point of tile.tileData) {
-        if (point.uid in this.texts) {
-          // console.log('remove:', tile.tileId, point.uid);
-          tile.graphics.removeChild(this.texts[point.uid]);
+      try {
+        for (const point of tile.tileData) {
+          if (point.uid in this.texts) {
+            // console.log('remove:', tile.tileId, point.uid);
+            tile.graphics.removeChild(this.texts[point.uid]);
 
-          delete this.texts[point.uid];
-          delete this.boxes[point.uid];
+            delete this.texts[point.uid];
+            delete this.boxes[point.uid];
+          }
         }
+      } catch (err) {
+
       }
+    }
+
+    calculateVisibleTiles() {
+      const visibleTiles = super.calculateVisibleTiles();
+
+      return visibleTiles;
     }
 
     draw() {

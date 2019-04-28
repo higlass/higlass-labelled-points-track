@@ -28,7 +28,7 @@
   <meta property="og:image" content="https://raw.githubusercontent.com/flekschas/higlass-geojson/master/teaser.jpg" />
 
   <title>HiGlass Labelled Points Track</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
   <link rel="stylesheet" href="hglib.css">
 
   <style type="text/css">
@@ -36,7 +36,6 @@
     body {
       margin: 0;
       padding: 0;
-      background: black !important;
     }
     #demo {
       position: absolute;
@@ -47,10 +46,11 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.0/react-bootstrap.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+
 </head>
 <body>
   <div id="demo"></div>
@@ -62,52 +62,91 @@ const testViewConfig =
   "editable": true,
   "views": [
     {
-      "uid": "PnsgfSEHT2OU8FflQCl2lw",
+      "uid": "IXH9ULrKT06fSCUh7_K5Bw",
       "tracks": {
         "top": [
           {
             "type": "top-axis",
-            "options": {}
+            "options": {},
+            "server": "http://localhost:55939/api/v1",
+            "height": 20,
+            "position": "top",
+            "uid": "VzVR2bgzSjqR-xz8KNNGXA",
+            "name": "Top Axis"
           }
         ],
         "center": [
           {
             "type": "labelled-points-track",
             "options": {
-              "labelField": "gene1"
+              "xField": "x",
+              "yField": "y",
+              "labelField": "label"
             },
-            "server": "http://localhost:64489/api/v1",
-            "tilesetUid": "a",
-            "height": 200
+            "tilesetUid": "N4KnFag3SI6LCVrUG9qfhA",
+            "height": 200,
+            "server": "http://localhost:55939/api/v1",
+            "position": "center",
+            "uid": "cLe92Yc0T6u8TNotyZCgrg"
           }
         ],
         "left": [
           {
             "type": "left-axis",
-            "options": {}
+            "options": {},
+            "server": "http://localhost:55939/api/v1",
+            "width": 100,
+            "position": "left",
+            "uid": "OHlejg1mQwWDqFAfbwsEHQ",
+            "name": "Left Axis"
           }
         ],
         "right": [],
-        "bottom": []
+        "bottom": [],
+        "whole": [],
+        "gallery": []
       },
       "layout": {
         "w": 12,
-        "h": 6,
+        "h": 9,
         "x": 0,
-        "y": 0
-      }
+        "y": 0,
+        "i": "IXH9ULrKT06fSCUh7_K5Bw",
+        "moved": false,
+        "static": false
+      },
+      "initialXDomain": [
+        -180,
+        180
+      ],
+      "initialYDomain": [
+        -180,
+        180
+      ]
     }
   ],
   "trackSourceServers": [
     "http://higlass.io/api/v1"
   ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs"
-}
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+};
 
-window.hglib.createHgComponent(
+window.hglib.viewer(
   document.getElementById('demo'),
   testViewConfig,
-  { bounded: true, isDarkTheme: false },
+  { bounded: true },
 );
 </script>
 </html>
