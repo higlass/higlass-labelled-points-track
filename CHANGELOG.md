@@ -1,3 +1,7 @@
+v0.1.12
+
+- Avoid bundling PIXI and slugid
+
 v0.1.7
 
 - Configurable x field in options.xPosField

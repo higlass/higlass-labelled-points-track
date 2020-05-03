@@ -1,6 +1,4 @@
 import boxIntersect from 'box-intersect';
-import * as PIXI from 'pixi.js';
-import slugid from 'slugid';
 
 const POINT_WIDTH = 6;
 
@@ -10,6 +8,9 @@ const LabelledPointsTrack = (HGC, ...args) => {
       'Uncaught TypeError: Class constructor cannot be invoked without "new"',
     );
   }
+
+  // Services
+  const { PIXI, slugid } = HGC.libraries;
 
   class LabelledPointsTrackClass extends HGC.tracks.Annotations2dTrack {
     constructor(
@@ -185,7 +186,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
         }
       }
 
-      const result = boxIntersect(allBoxes, (i, j) => {
+      boxIntersect(allBoxes, (i, j) => {
         if (allTexts[i].importance > allTexts[j].importance) {
           // console.log('hiding:', allTexts[j].caption)
           allTexts[j].text.visible = false;
