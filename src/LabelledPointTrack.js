@@ -2,6 +2,8 @@ import boxIntersect from 'box-intersect';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
+const POINT_WIDTH = 6;
+
 const LabelledPointsTrack = (HGC, ...args) => {
   if (!new.target) {
     throw new Error(
@@ -33,12 +35,6 @@ const LabelledPointsTrack = (HGC, ...args) => {
       return this.tilesetInfo && this.tilesetInfo.max_pos
         ? this.tilesetInfo.max_pos[1]
         : this.tilesetInfo.max_width || this.tilesetInfo.max_size;
-    }
-
-    draw() {
-      // console.log('--------------');
-      super.draw();
-      // console.log('this.xTiles:', this.xTiles, this.yTiles, this._yScale.domain());
     }
 
     initTile(tile) {
@@ -79,7 +75,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
         this.allTexts = Object.values(this.texts);
         this.allBoxes = Object.values(this.boxes);
-        
+
         return text;
       } else {
         return this.texts[point.uid].text;
@@ -122,7 +118,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
       if (!tile.tileData.length)
         return;
-      
+
       // console.log('draw:', tile.tileId);
       for (const point of tile.tileData) {
         // console.log('point.pos:', point.pos);
@@ -134,11 +130,9 @@ const LabelledPointsTrack = (HGC, ...args) => {
         const xPos = this._xScale(point[xField]);
         const yPos = this._yScale(point[yField]);
 
-        const pointWidth = 6;
-
         tile.graphics.beginFill(0x000000);
-        tile.graphics.drawRect(xPos - (pointWidth / 2),
-          yPos - (pointWidth / 2), pointWidth, pointWidth);
+        tile.graphics.drawRect(xPos - (POINT_WIDTH / 2),
+          yPos - (POINT_WIDTH / 2), POINT_WIDTH, POINT_WIDTH);
 
         const text = this.getText(tile, point);
 
@@ -190,7 +184,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
           allTexts[i].text.visible = true;
         }
       }
-      
+
       const result = boxIntersect(allBoxes, (i, j) => {
         if (allTexts[i].importance > allTexts[j].importance) {
           // console.log('hiding:', allTexts[j].caption)
@@ -201,6 +195,75 @@ const LabelledPointsTrack = (HGC, ...args) => {
         }
       });
     }
+
+
+    exportSVG() {
+      let track = null;
+      let base = null;
+
+      if (super.exportSVG) {
+        [base, track] = super.exportSVG();
+      } else {
+        base = document.createElement('g');
+        track = base;
+      }
+      const output = document.createElement('g');
+      output.setAttribute(
+        'transform',
+        `translate(${this.position[0]},${this.position[1]})`
+      );
+
+      track.appendChild(output);
+      const textOutput = document.createElement('g');
+      const rectOutput = document.createElement('g');
+
+      output.appendChild(textOutput);
+      output.appendChild(rectOutput);
+
+      for (const textObj of this.allTexts) {
+        const text = textObj.text;
+
+        if (!text.visible) {
+          continue;
+        }
+
+        const g = document.createElement('g');
+        const t = document.createElement('text');
+
+
+        textOutput.appendChild(g);
+        g.appendChild(t);
+        g.setAttribute(
+          'transform',
+          `translate(${text.x},${text.y})`
+        );
+
+        t.setAttribute('text-anchor', 'start');
+        t.setAttribute('dy', '16px');
+        t.setAttribute('dx', '4px')
+        t.setAttribute('font-family', 'Arial');
+        t.setAttribute('font-size', 12);
+
+        t.innerHTML = text.text;
+      }
+
+      for (const boxId in this.boxes) {
+        const box = this.boxes[boxId];
+        const r = document.createElement('rect');
+
+        r.setAttribute('x', box[0]);
+        r.setAttribute('y', box[1]);
+        r.setAttribute('width', POINT_WIDTH);
+        r.setAttribute('height', POINT_WIDTH);
+
+        r.setAttribute('fill', 'black');
+
+        rectOutput.appendChild(r);
+      }
+
+      return [base, base];
+    }
+
   }
 
   return new LabelledPointsTrackClass(...args);

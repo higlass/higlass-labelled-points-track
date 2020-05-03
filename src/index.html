@@ -57,86 +57,124 @@
 </body>
 <script src="hglib.js"></script>
 <script>
-const testViewConfig = 
+const testViewConfig =
 {
   "editable": true,
+  "trackSourceServers": [
+    "/api/v1",
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
-      "uid": "IXH9ULrKT06fSCUh7_K5Bw",
+      "initialXDomain": [
+        -122.20156701514686,
+        -122.18557812096043
+      ],
+      "initialYDomain": [
+        -40.87951017946116,
+        -40.86589657554189
+      ],
       "tracks": {
         "top": [
           {
             "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "f9XyN0MqRGenjZwyxzuPqw",
+            "uid": "EmigNWHmTTqHrus850E4QQ",
             "options": {},
-            "server": "http://localhost:55939/api/v1",
-            "height": 20,
-            "position": "top",
-            "uid": "VzVR2bgzSjqR-xz8KNNGXA",
-            "name": "Top Axis"
-          }
-        ],
-        "center": [
-          {
-            "type": "labelled-points-track",
-            "options": {
-              "xField": "x",
-              "yField": "y",
-              "labelField": "label"
-            },
-            "tilesetUid": "N4KnFag3SI6LCVrUG9qfhA",
-            "height": 200,
-            "server": "http://localhost:55939/api/v1",
-            "position": "center",
-            "uid": "cLe92Yc0T6u8TNotyZCgrg"
+            "width": 163,
+            "height": 20
           }
         ],
         "left": [
           {
             "type": "left-axis",
-            "options": {},
-            "server": "http://localhost:55939/api/v1",
-            "width": 100,
-            "position": "left",
-            "uid": "OHlejg1mQwWDqFAfbwsEHQ",
-            "name": "Left Axis"
+            "local": true,
+            "orientation": "1d-vertical",
+            "thumbnail": {},
+            "availableOptions": [
+              "minWidth"
+            ],
+            "defaultOptions": {
+              "minWidth": 100
+            },
+            "server": "",
+            "tilesetUid": "FC_-HyLfTzenwsNs25fsyQ",
+            "uid": "AgP_uuXaQNmULVv89sMgOw",
+            "options": {
+              "minWidth": 100
+            },
+            "width": 29,
+            "height": 420
           }
         ],
-        "right": [],
+        "center": [
+          {
+            "uid": "bSUNQetBTMOULgjVWRxeBQ",
+            "type": "combined",
+            "contents": [
+              {
+                "type": "osm-tiles",
+                "uid": "ez_rOgMcTOGqLmRDt_6TRg",
+                "tilesetUid": "JC76ehyHQWCWvR_z2J9zkA",
+                "server": "https://resgen.io/api/v1",
+                "options": {
+                  "minPos": -180,
+                  "maxPos": 180,
+                  "maxZoom": 19,
+                  "labelPosition": "bottomRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0
+                },
+                "width": 163,
+                "height": 420
+              },
+              {
+                "type": "labelled-points-track",
+                "uid": "EERI21SXQzO0-s7f5sAe9A",
+                "tilesetUid": "ITgQxNasQOqCoHDNmvR45A",
+                "server": "https://resgen.io/api/v1",
+                "options": {
+                  "name": "trees.geojson.gjdb"
+                },
+                "width": 20,
+                "height": 20
+              }
+            ],
+            "width": 163,
+            "height": 420,
+            "options": {}
+          }
+        ],
         "bottom": [],
+        "right": [],
         "whole": [],
         "gallery": []
       },
       "layout": {
         "w": 12,
-        "h": 9,
+        "h": 6,
         "x": 0,
-        "y": 0,
-        "i": "IXH9ULrKT06fSCUh7_K5Bw",
-        "moved": false,
-        "static": false
+        "y": 0
       },
-      "initialXDomain": [
-        -180,
-        180
-      ],
-      "initialYDomain": [
-        -180,
-        180
-      ]
+      "uid": "d7AQiNvQTuCDl4HKbv3s4g"
     }
   ],
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
-  "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
-  },
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
   "valueScaleLocks": {
     "locksByViewUid": {},
     "locksDict": {}
