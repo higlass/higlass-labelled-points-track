@@ -7,3 +7,5 @@ register({
   track: LabelledPointTrack,
   config: LabelledPointTrack.config,
 });
+
+export default LabelledPointTrack;
