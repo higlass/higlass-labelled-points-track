@@ -18,10 +18,11 @@
     "type": "git",
     "url": "git://github.com/pkerpedjiev/higlass-labelled-points-track.git"
   },
-  "main": "src/index.js",
+  "main": "dist/higlass-labelled-points-track.min.js",
   "unpkg": "dist/higlass-labelled-points-track.min.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "devDependencies": {
     "autoprefixer": "^8.2.0",
