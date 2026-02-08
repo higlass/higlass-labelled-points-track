@@ -57,7 +57,7 @@
   "scripts": {
     "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
     "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --mode development --open",
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
     "prerelease": "rm -rf dist/*; npm run build; zip -r dist.zip dist"
   },
   "dependencies": {
