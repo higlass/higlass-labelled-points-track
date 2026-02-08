@@ -53,8 +53,8 @@
     "webpack-dev-server": "^3.1.1"
   },
   "scripts": {
-    "build": "webpack --mode production",
-    "start": "webpack-dev-server --mode development --open",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --mode development --open",
     "prerelease": "rm -rf dist/*; npm run build; zip -r dist.zip dist"
   },
   "dependencies": {

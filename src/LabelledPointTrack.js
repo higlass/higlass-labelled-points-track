@@ -23,6 +23,9 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
       this.texts = {};
       this.boxes = {};
+      this.hoverGraphics = new PIXI.Graphics();
+      this.pMain.addChild(this.hoverGraphics);
+      this.hoverGraphics.setParent(this.pMain);
     }
 
     /* --------------------------- Getter / Setter ---------------------------- */
@@ -49,6 +52,43 @@ const LabelledPointsTrack = (HGC, ...args) => {
           console.warn('tile.tileData is not iterable:', tile.tileData);
       }
     }
+
+  getMouseOverUids(trackX, trackY) {
+    if (!this.tilesetInfo) {
+      return null;
+    }
+
+    let closestUid = null;
+    let minDistance = 5;
+
+    for (const uid in this.boxes) {
+      const box = this.boxes[uid];
+      const pointX = box[0];
+      const pointY = box[1];
+      const distance = Math.sqrt((trackX - pointX) ** 2 + (trackY - pointY) ** 2);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestUid = uid;
+      }
+    }
+
+    return [closestUid];
+  }
+
+  itemsHovered(uids) {
+    this.hoverGraphics.clear();
+    if (!uids || !uids.length) return;
+    
+    this.hoverGraphics.lineStyle(2, 0xff0000);
+    for (const uid of uids) {
+      if (uid && this.boxes[uid]) {
+        const box = this.boxes[uid];
+        this.hoverGraphics.drawRect(box[0] - (POINT_WIDTH / 2) - 2, box[1] - (POINT_WIDTH / 2) - 2, POINT_WIDTH + 4, POINT_WIDTH + 4);
+      }
+    }
+    this.animate();
+  }
 
     getText(tile, point) {
       if (!this.texts) this.texts = {};
@@ -189,8 +229,6 @@ const LabelledPointsTrack = (HGC, ...args) => {
           allTexts[i].text.visible = true;
         }
       }
-
-      console.log('hi')
 
       boxIntersect(allBoxes, (i, j) => {
         if (allTexts[i].importance > allTexts[j].importance) {
