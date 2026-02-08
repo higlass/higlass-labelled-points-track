@@ -51,6 +51,10 @@ const LabelledPointsTrack = (HGC, ...args) => {
     }
 
     getText(tile, point) {
+      if (!this.texts) this.texts = {};
+      if (!this.boxes) this.boxes = {};
+      
+
       if (!(point.uid in this.texts)) {
         // console.log('point:', point);
 
@@ -185,6 +189,8 @@ const LabelledPointsTrack = (HGC, ...args) => {
           allTexts[i].text.visible = true;
         }
       }
+
+      console.log('hi')
 
       boxIntersect(allBoxes, (i, j) => {
         if (allTexts[i].importance > allTexts[j].importance) {
