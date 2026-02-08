@@ -10,7 +10,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
   }
 
   // Services
-  const { PIXI, slugid } = HGC.libraries;
+  const { PIXI, slugid, d3Color, d3Scale } = HGC.libraries;
 
   class LabelledPointsTrackClass extends HGC.tracks.Annotations2dTrack {
     constructor(
@@ -23,6 +23,10 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
       this.texts = {};
       this.boxes = {};
+      this.colors = {};
+      this.hoverGraphics = new PIXI.Graphics();
+      this.pMain.addChild(this.hoverGraphics);
+      this.hoverGraphics.setParent(this.pMain);
     }
 
     /* --------------------------- Getter / Setter ---------------------------- */
@@ -48,9 +52,105 @@ const LabelledPointsTrack = (HGC, ...args) => {
         } catch (err) {
           console.warn('tile.tileData is not iterable:', tile.tileData);
       }
+      
+      if (this.options.colorField && this.options.colorScale) {
+        this.buildColorScale(tile.tileData);
+      }
     }
 
+    buildColorScale(data) {
+      const colorField = this.options.colorField;
+      const colorScale = this.options.colorScale;
+      
+      if (colorScale.type === 'categorical') {
+        let colorMap = colorScale.map;
+        
+        if (!colorMap) {
+          const uniqueValues = [...new Set(data.map(p => p[colorField]).filter(v => v != null))];
+          const colorScheme = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
+          colorMap = {};
+          uniqueValues.forEach((value, i) => {
+            colorMap[value] = colorScheme[i % colorScheme.length];
+          });
+        }
+        
+        for (const point of data) {
+          const value = point[colorField];
+          const colorStr = colorMap[value] || 'black';
+          this.colors[point.uid] = this.colorToHex(colorStr);
+        }
+      } else if (colorScale.type === 'quantitative') {
+        const values = data.map(p => p[colorField]).filter(v => v != null);
+        const min = colorScale.min !== undefined ? colorScale.min : Math.min(...values);
+        const max = colorScale.max !== undefined ? colorScale.max : Math.max(...values);
+        
+        const colors = colorScale.colors || ['white', 'black'];
+        const scale = d3Scale.scaleLinear()
+          .domain(colors.map((_, i) => min + (max - min) * i / (colors.length - 1)))
+          .range(colors);
+        
+        for (const point of data) {
+          const value = point[colorField];
+          if (value == null) {
+            this.colors[point.uid] = 0x000000;
+            continue;
+          }
+          this.colors[point.uid] = this.colorToHex(scale(value));
+        }
+      }
+    }
+
+    colorToHex(colorStr) {
+      const rgb = d3Color.color(colorStr).rgb();
+      return (rgb.r << 16) | (rgb.g << 8) | rgb.b;
+    }
+
+    getPointColor(point) {
+      return this.colors[point.uid] || 0x000000;
+    }
+
+  getMouseOverUids(trackX, trackY) {
+    if (!this.tilesetInfo) {
+      return null;
+    }
+
+    let closestUid = null;
+    let minDistance = 5;
+
+    for (const uid in this.boxes) {
+      const box = this.boxes[uid];
+      const pointX = box[0];
+      const pointY = box[1];
+      const distance = Math.sqrt((trackX - pointX) ** 2 + (trackY - pointY) ** 2);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestUid = uid;
+      }
+    }
+
+    return [closestUid];
+  }
+
+  itemsHovered(uids) {
+    this.hoverGraphics.clear();
+    if (!uids || !uids.length) return;
+    
+    this.hoverGraphics.lineStyle(2, 0xff0000);
+    for (const uid of uids) {
+      if (uid && this.boxes[uid]) {
+        const box = this.boxes[uid];
+        this.hoverGraphics.drawRect(box[0] - (POINT_WIDTH / 2) - 2, box[1] - (POINT_WIDTH / 2) - 2, POINT_WIDTH + 4, POINT_WIDTH + 4);
+      }
+    }
+    this.animate();
+  }
+
     getText(tile, point) {
+      if (!this.texts) this.texts = {};
+      if (!this.boxes) this.boxes = {};
+      
+
       if (!(point.uid in this.texts)) {
         // console.log('point:', point);
 
@@ -92,6 +192,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
             delete this.texts[point.uid];
             delete this.boxes[point.uid];
+            delete this.colors[point.uid];
           }
         }
       } catch (err) {
@@ -131,7 +232,8 @@ const LabelledPointsTrack = (HGC, ...args) => {
         const xPos = this._xScale(point[xField]);
         const yPos = this._yScale(point[yField]);
 
-        tile.graphics.beginFill(0x000000);
+        const color = this.getPointColor(point);
+        tile.graphics.beginFill(color);
         tile.graphics.drawRect(xPos - (POINT_WIDTH / 2),
           yPos - (POINT_WIDTH / 2), POINT_WIDTH, POINT_WIDTH);
 
@@ -257,7 +359,8 @@ const LabelledPointsTrack = (HGC, ...args) => {
         r.setAttribute('width', POINT_WIDTH);
         r.setAttribute('height', POINT_WIDTH);
 
-        r.setAttribute('fill', 'black');
+        const color = this.colors[boxId] || 0x000000;
+        r.setAttribute('fill', `#${color.toString(16).padStart(6, '0')}`);
 
         rectOutput.appendChild(r);
       }
@@ -279,6 +382,11 @@ LabelledPointsTrack.config = {
   name: 'LabelledPointsTrack',
   thumbnail: new DOMParser().parseFromString(icon, 'text/xml').documentElement,
   availableOptions: [
+    'labelField',
+    'xPosField',
+    'yPosField',
+    'colorField',
+    'colorScale',
   ],
   defaultOptions: {
   },

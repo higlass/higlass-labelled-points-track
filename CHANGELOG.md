@@ -1,3 +1,8 @@
+v0.2.0
+
+- Colored points
+- Simultaneous hovering across views
+
 v0.1.12
 
 - Avoid bundling PIXI and slugid

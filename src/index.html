@@ -57,8 +57,7 @@
 </body>
 <script src="hglib.js"></script>
 <script>
-const testViewConfig =
-{
+const testViewConfig ={
   "editable": true,
   "trackSourceServers": [
     "/api/v1",
@@ -68,12 +67,12 @@ const testViewConfig =
   "views": [
     {
       "initialXDomain": [
-        -122.20156701514686,
-        -122.18557812096043
+        -122.34292601335041,
+        -122.13685493088353
       ],
       "initialYDomain": [
-        -40.87951017946116,
-        -40.86589657554189
+        -40.98228559500925,
+        -40.76758828118323
       ],
       "tracks": {
         "top": [
@@ -119,30 +118,86 @@ const testViewConfig =
             "type": "combined",
             "contents": [
               {
-                "type": "osm-tiles",
-                "uid": "ez_rOgMcTOGqLmRDt_6TRg",
-                "tilesetUid": "JC76ehyHQWCWvR_z2J9zkA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "minPos": -180,
-                  "maxPos": 180,
-                  "maxZoom": 19,
-                  "labelPosition": "bottomRight",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0
-                },
-                "width": 163,
-                "height": 420
-              },
-              {
                 "type": "labelled-points-track",
                 "uid": "EERI21SXQzO0-s7f5sAe9A",
-                "tilesetUid": "ITgQxNasQOqCoHDNmvR45A",
-                "server": "https://resgen.io/api/v1",
+                "data": {
+                  "type": "local-tiles",
+                  "tilesetInfo": {
+                    "x": {
+                      "zoom_step": 1,
+                      "tile_size": 256,
+                      "max_zoom": 0,
+                      "min_pos": [
+                        -180,
+                        -180
+                      ],
+                      "max_pos": [
+                        180,
+                        180
+                      ],
+                      "max_data_length": 134217728,
+                      "max_width": 360
+                    }
+                  },
+                  "tiles": {
+                    "x.0.0.0": [
+                      {
+                        "x": -122.29340351667594,
+                        "y": -40.90076029033937,
+                        "data": "Fraxinus o. `Raywood'",
+                        "uid": "Eq71PfMlR0aqHd2zSlDclA"
+                      },
+                      {
+                        "x": -122.18808936055962,
+                        "y": -40.805069480744535,
+                        "data": "Acer rubrum",
+                        "uid": "DYKKOHNuRBmEPdTip0pyDw"
+                      },
+                      {
+                        "x": -122.23773953309676,
+                        "y": -40.885281196424444,
+                        "data": "Other",
+                        "uid": "b04PPSR6Ti28MJPpzXpAuA"
+                      },
+                      {
+                        "x": -122.24511511745628,
+                        "y": -40.88863482388454,
+                        "data": "Prunus sp",
+                        "uid": "FDx3bT4lS3uHU_O3QWWSeA"
+                      },
+                      {
+                        "x": -122.23343925578251,
+                        "y": -40.8557013042502,
+                        "data": "Robinia sp",
+                        "uid": "awo8Nh_JSVuQ9qL7i8LwNw"
+                      },
+                      {
+                        "x": -122.24342444542407,
+                        "y": -40.870321322567484,
+                        "data": "Liquidambar styraciflua",
+                        "uid": "Y4YWXsOpTJuo_1gwX7iEVQ"
+                      },
+                      {
+                        "x": -122.2642961601619,
+                        "y": -40.94080429377518,
+                        "data": "Platanus acerifolia",
+                        "uid": "IryaZtchQvK8u9SIb0FXQw"
+                      },
+                      {
+                        "x": -122.26123092270329,
+                        "y": -40.94244384313975,
+                        "data": "Pistacia chinensis",
+                        "uid": "L3YvLuqwRuKcR3-UYVmWvw"
+                      }
+                    ]
+                  }
+                },
                 "options": {
-                  "name": "trees.geojson.gjdb"
+                  "name": "trees.geojson.gjdb",
+                  "colorField": "data",
+                  "colorScale": {
+                    "type": "categorical"
+                  }
                 },
                 "width": 20,
                 "height": 20
@@ -179,7 +234,7 @@ const testViewConfig =
     "locksByViewUid": {},
     "locksDict": {}
   }
-};
+}
 
 window.hglib.viewer(
   document.getElementById('demo'),
