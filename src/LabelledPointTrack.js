@@ -59,6 +59,8 @@ const LabelledPointsTrack = (HGC, ...args) => {
     }
 
     buildColorScale(data) {
+      if (!this.colors) this.colors = {};
+
       const colorField = this.options.colorField;
       const colorScale = this.options.colorScale;
       
@@ -73,7 +75,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
             colorMap[value] = colorScheme[i % colorScheme.length];
           });
         }
-        
+
         for (const point of data) {
           const value = point[colorField];
           const colorStr = colorMap[value] || 'black';
@@ -236,6 +238,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
         tile.graphics.beginFill(color);
         tile.graphics.drawRect(xPos - (POINT_WIDTH / 2),
           yPos - (POINT_WIDTH / 2), POINT_WIDTH, POINT_WIDTH);
+        tile.graphics.endFill();
 
         const text = this.getText(tile, point);
 
