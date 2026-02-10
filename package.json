@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "box-intersect": "1.0.2",
-    "higlass": "^1.9.5",
+    "higlass": "^2.2.0",
     "higlass-register": "^0.1.0"
   }
 }
