@@ -1,3 +1,9 @@
+v0.3.0
+
+- Added circular points
+- Fixed click handler
+- Updated fsevents
+
 v0.2.0
 
 - Colored points
