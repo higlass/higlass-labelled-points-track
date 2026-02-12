@@ -195,6 +195,7 @@ const testViewConfig ={
                 "options": {
                   "name": "trees.geojson.gjdb",
                   "colorField": "data",
+                  "pointShape": "circle",
                   "colorScale": {
                     "type": "categorical"
                   }
@@ -236,10 +237,16 @@ const testViewConfig ={
   }
 }
 
-window.hglib.viewer(
+const viewer = window.hglib.viewer(
   document.getElementById('demo'),
   testViewConfig,
   { bounded: true },
 );
+
+
+viewer.then(api => {
+  api.on('click', (evt) => console.log("clicked", evt))
+})
+
 </script>
 </html>

@@ -64,5 +64,8 @@
     "box-intersect": "1.0.2",
     "higlass": "^2.2.0",
     "higlass-register": "^0.1.0"
+  },
+  "overrides": {
+    "fsevents": "^2.3.2"
   }
 }

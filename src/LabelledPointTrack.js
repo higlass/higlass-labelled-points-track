@@ -24,6 +24,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
       this.texts = {};
       this.boxes = {};
       this.colors = {};
+      this.pointData = {};
       this.hoverGraphics = new PIXI.Graphics();
       this.pMain.addChild(this.hoverGraphics);
       this.hoverGraphics.setParent(this.pMain);
@@ -48,6 +49,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
             if (!('uid' in data)) {
               data.uid = slugid.nice();
             }
+            this.pointData[data.uid] = data;
           }
         } catch (err) {
           console.warn('tile.tileData is not iterable:', tile.tileData);
@@ -142,7 +144,11 @@ const LabelledPointsTrack = (HGC, ...args) => {
     for (const uid of uids) {
       if (uid && this.boxes[uid]) {
         const box = this.boxes[uid];
-        this.hoverGraphics.drawRect(box[0] - (POINT_WIDTH / 2) - 2, box[1] - (POINT_WIDTH / 2) - 2, POINT_WIDTH + 4, POINT_WIDTH + 4);
+        if (this.options.pointShape === 'circle') {
+          this.hoverGraphics.drawCircle(box[0], box[1], (POINT_WIDTH / 2) + 2);
+        } else {
+          this.hoverGraphics.drawRect(box[0] - (POINT_WIDTH / 2) - 2, box[1] - (POINT_WIDTH / 2) - 2, POINT_WIDTH + 4, POINT_WIDTH + 4);
+        }
       }
     }
     this.animate();
@@ -195,6 +201,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
             delete this.texts[point.uid];
             delete this.boxes[point.uid];
             delete this.colors[point.uid];
+            delete this.pointData[point.uid];
           }
         }
       } catch (err) {
@@ -236,8 +243,12 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
         const color = this.getPointColor(point);
         tile.graphics.beginFill(color);
-        tile.graphics.drawRect(xPos - (POINT_WIDTH / 2),
-          yPos - (POINT_WIDTH / 2), POINT_WIDTH, POINT_WIDTH);
+        if (this.options.pointShape === 'circle') {
+          tile.graphics.drawCircle(xPos, yPos, POINT_WIDTH / 2);
+        } else {
+          tile.graphics.drawRect(xPos - (POINT_WIDTH / 2),
+            yPos - (POINT_WIDTH / 2), POINT_WIDTH, POINT_WIDTH);
+        }
         tile.graphics.endFill();
 
         const text = this.getText(tile, point);
@@ -302,6 +313,29 @@ const LabelledPointsTrack = (HGC, ...args) => {
       });
     }
 
+  /**
+   * Capture click events. x and y are relative to the track position
+   * @template T
+   * @param {number} x - X position of the click event.
+   * @param {number} y - Y position of the click event.
+   * @param {T} evt - The event.
+   * @return {{ type: 'generic', event: T, payload: null }}
+   */
+  click(x, y, evt) {
+    const uids = this.getMouseOverUids(x, y);
+    const hoveredUid = uids && uids[0];
+    const payload = hoveredUid ? this.pointData[hoveredUid] : null;
+
+    return {
+      type: 'labelled-points',
+      event: evt,
+      payload,
+    };
+  }
+
+  /** There was a click event outside the track * */
+  clickOutside() {}
+
 
     exportSVG() {
       let track = null;
@@ -355,17 +389,24 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
       for (const boxId in this.boxes) {
         const box = this.boxes[boxId];
-        const r = document.createElement('rect');
-
-        r.setAttribute('x', box[0]);
-        r.setAttribute('y', box[1]);
-        r.setAttribute('width', POINT_WIDTH);
-        r.setAttribute('height', POINT_WIDTH);
-
         const color = this.colors[boxId] || 0x000000;
-        r.setAttribute('fill', `#${color.toString(16).padStart(6, '0')}`);
-
-        rectOutput.appendChild(r);
+        
+        if (this.options.pointShape === 'circle') {
+          const c = document.createElement('circle');
+          c.setAttribute('cx', box[0]);
+          c.setAttribute('cy', box[1]);
+          c.setAttribute('r', POINT_WIDTH / 2);
+          c.setAttribute('fill', `#${color.toString(16).padStart(6, '0')}`);
+          rectOutput.appendChild(c);
+        } else {
+          const r = document.createElement('rect');
+          r.setAttribute('x', box[0]);
+          r.setAttribute('y', box[1]);
+          r.setAttribute('width', POINT_WIDTH);
+          r.setAttribute('height', POINT_WIDTH);
+          r.setAttribute('fill', `#${color.toString(16).padStart(6, '0')}`);
+          rectOutput.appendChild(r);
+        }
       }
 
       return [base, base];
@@ -390,9 +431,26 @@ LabelledPointsTrack.config = {
     'yPosField',
     'colorField',
     'colorScale',
+    'pointShape',
   ],
   defaultOptions: {
+    'pointShape': 'circle'
   },
+  optionsInfo: {
+    pointShape: {
+      name: 'Point Shape',
+      inlineOptions: {
+        circle: {
+          value: 'circle',
+          name: 'Circle',
+        },
+        square: {
+          value: 'square',
+          name: 'Square',
+        },
+      },
+    },
+  }
 };
 
 export default LabelledPointsTrack;
