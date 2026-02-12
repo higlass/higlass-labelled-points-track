@@ -310,6 +310,27 @@ const LabelledPointsTrack = (HGC, ...args) => {
       });
     }
 
+  /**
+   * Capture click events. x and y are relative to the track position
+   * @template T
+   * @param {number} x - X position of the click event.
+   * @param {number} y - Y position of the click event.
+   * @param {T} evt - The event.
+   * @return {{ type: 'generic', event: T, payload: null }}
+   */
+  click(x, y, evt) {
+    console.log('click', x, y);
+
+    return {
+      type: 'generic',
+      event: evt,
+      payload: null,
+    };
+  }
+
+  /** There was a click event outside the track * */
+  clickOutside() {}
+
 
     exportSVG() {
       let track = null;
@@ -408,7 +429,23 @@ LabelledPointsTrack.config = {
     'pointShape',
   ],
   defaultOptions: {
+    'pointShape': 'circle'
   },
+  optionsInfo: {
+    pointShape: {
+      name: 'Point Shape',
+      inlineOptions: {
+        circle: {
+          value: 'circle',
+          name: 'Circle',
+        },
+        square: {
+          value: 'square',
+          name: 'Square',
+        },
+      },
+    },
+  }
 };
 
 export default LabelledPointsTrack;
