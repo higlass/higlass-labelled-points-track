@@ -24,6 +24,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
       this.texts = {};
       this.boxes = {};
       this.colors = {};
+      this.pointData = {};
       this.hoverGraphics = new PIXI.Graphics();
       this.pMain.addChild(this.hoverGraphics);
       this.hoverGraphics.setParent(this.pMain);
@@ -48,6 +49,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
             if (!('uid' in data)) {
               data.uid = slugid.nice();
             }
+            this.pointData[data.uid] = data;
           }
         } catch (err) {
           console.warn('tile.tileData is not iterable:', tile.tileData);
@@ -199,6 +201,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
             delete this.texts[point.uid];
             delete this.boxes[point.uid];
             delete this.colors[point.uid];
+            delete this.pointData[point.uid];
           }
         }
       } catch (err) {
@@ -319,12 +322,14 @@ const LabelledPointsTrack = (HGC, ...args) => {
    * @return {{ type: 'generic', event: T, payload: null }}
    */
   click(x, y, evt) {
-    console.log('click', x, y);
+    const uids = this.getMouseOverUids(x, y);
+    const hoveredUid = uids && uids[0];
+    const payload = hoveredUid ? this.pointData[hoveredUid] : null;
 
     return {
-      type: 'generic',
+      type: 'labelled-points',
       event: evt,
-      payload: null,
+      payload,
     };
   }
 
