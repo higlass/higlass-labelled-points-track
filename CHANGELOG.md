@@ -1,3 +1,10 @@
+v0.4.0
+
+- Formatted mouseover
+- Hover graphics drawn over points
+- Added an option for using a field for determining point size
+- Added an option for specifying the default size
+
 v0.3.0
 
 - Added circular points

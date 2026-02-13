@@ -113,6 +113,25 @@ const LabelledPointsTrack = (HGC, ...args) => {
       return this.colors[point.uid] || 0x000000;
     }
 
+    getPointSize(point) {
+      const sizeField = this.options.sizeField;
+      const defaultSize = this.options.defaultSize || POINT_WIDTH;
+      return sizeField && point[sizeField] != null ? point[sizeField] : defaultSize;
+    }
+
+    getMouseOverHtml(trackX, trackY) {
+      const uids = this.getMouseOverUids(trackX, trackY);
+      if (!uids || !uids[0] || !this.pointData[uids[0]]) return '';
+      
+      const point = this.pointData[uids[0]];
+      const entries = Object.entries(point)
+        .filter(([key]) => key !== 'uid')
+        .map(([key, value]) => `<tr><td style="padding: 2px 8px 2px 0; font-weight: bold;">${key}:</td><td style="padding: 2px 0;">${value}</td></tr>`)
+        .join('');
+      
+      return `<table style="font-size: 12px;">${entries}</table>`;
+    }
+
   getMouseOverUids(trackX, trackY) {
     if (!this.tilesetInfo) {
       return null;
@@ -143,12 +162,13 @@ const LabelledPointsTrack = (HGC, ...args) => {
     this.pMain.setChildIndex(this.hoverGraphics, this.pMain.children.length - 1);
     this.hoverGraphics.lineStyle(2, 0xff0000);
     for (const uid of uids) {
-      if (uid && this.boxes[uid]) {
+      if (uid && this.boxes[uid] && this.pointData[uid]) {
         const box = this.boxes[uid];
+        const size = this.getPointSize(this.pointData[uid]);
         if (this.options.pointShape === 'circle') {
-          this.hoverGraphics.drawCircle(box[0], box[1], (POINT_WIDTH / 2) + 2);
+          this.hoverGraphics.drawCircle(box[0], box[1], (size / 2) + 2);
         } else {
-          this.hoverGraphics.drawRect(box[0] - (POINT_WIDTH / 2) - 2, box[1] - (POINT_WIDTH / 2) - 2, POINT_WIDTH + 4, POINT_WIDTH + 4);
+          this.hoverGraphics.drawRect(box[0] - (size / 2) - 2, box[1] - (size / 2) - 2, size + 4, size + 4);
         }
       }
     }
@@ -243,12 +263,13 @@ const LabelledPointsTrack = (HGC, ...args) => {
         const yPos = this._yScale(point[yField]);
 
         const color = this.getPointColor(point);
+        const size = this.getPointSize(point);
         tile.graphics.beginFill(color);
         if (this.options.pointShape === 'circle') {
-          tile.graphics.drawCircle(xPos, yPos, POINT_WIDTH / 2);
+          tile.graphics.drawCircle(xPos, yPos, size / 2);
         } else {
-          tile.graphics.drawRect(xPos - (POINT_WIDTH / 2),
-            yPos - (POINT_WIDTH / 2), POINT_WIDTH, POINT_WIDTH);
+          tile.graphics.drawRect(xPos - (size / 2),
+            yPos - (size / 2), size, size);
         }
         tile.graphics.endFill();
 
@@ -391,20 +412,21 @@ const LabelledPointsTrack = (HGC, ...args) => {
       for (const boxId in this.boxes) {
         const box = this.boxes[boxId];
         const color = this.colors[boxId] || 0x000000;
+        const size = this.pointData[boxId] ? this.getPointSize(this.pointData[boxId]) : (this.options.defaultSize || POINT_WIDTH);
         
         if (this.options.pointShape === 'circle') {
           const c = document.createElement('circle');
           c.setAttribute('cx', box[0]);
           c.setAttribute('cy', box[1]);
-          c.setAttribute('r', POINT_WIDTH / 2);
+          c.setAttribute('r', size / 2);
           c.setAttribute('fill', `#${color.toString(16).padStart(6, '0')}`);
           rectOutput.appendChild(c);
         } else {
           const r = document.createElement('rect');
           r.setAttribute('x', box[0]);
           r.setAttribute('y', box[1]);
-          r.setAttribute('width', POINT_WIDTH);
-          r.setAttribute('height', POINT_WIDTH);
+          r.setAttribute('width', size);
+          r.setAttribute('height', size);
           r.setAttribute('fill', `#${color.toString(16).padStart(6, '0')}`);
           rectOutput.appendChild(r);
         }
@@ -433,9 +455,13 @@ LabelledPointsTrack.config = {
     'colorField',
     'colorScale',
     'pointShape',
+    'sizeField',
+    'defaultSize',
   ],
   defaultOptions: {
-    'pointShape': 'circle'
+    'pointShape': 'circle',
+    'sizeField': null,
+    'defaultSize': POINT_WIDTH
   },
   optionsInfo: {
     pointShape: {
@@ -449,6 +475,18 @@ LabelledPointsTrack.config = {
           value: 'square',
           name: 'Square',
         },
+      },
+    },
+    defaultSize: {
+      name: 'Default Point Size',
+      inlineOptions: {
+        1: { value: 1, name: '1' },
+        2: { value: 2, name: '2' },
+        3: { value: 3, name: '3' },
+        5: { value: 5, name: '5' },
+        8: { value: 8, name: '8' },
+        13: { value: 13, name: '13' },
+        21: { value: 21, name: '21' },
       },
     },
   }
