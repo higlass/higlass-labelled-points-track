@@ -140,6 +140,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
     this.hoverGraphics.clear();
     if (!uids || !uids.length) return;
     
+    this.pMain.setChildIndex(this.hoverGraphics, this.pMain.children.length - 1);
     this.hoverGraphics.lineStyle(2, 0xff0000);
     for (const uid of uids) {
       if (uid && this.boxes[uid]) {
