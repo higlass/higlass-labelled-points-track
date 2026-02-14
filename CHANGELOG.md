@@ -1,3 +1,7 @@
+v0.5.0
+
+- Option to position labels in different locations
+
 v0.4.0
 
 - Formatted mouseover

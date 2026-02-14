@@ -25,6 +25,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
       this.boxes = {};
       this.colors = {};
       this.pointData = {};
+      this.labelPositions = {};
       this.hoverGraphics = new PIXI.Graphics();
       this.pMain.addChild(this.hoverGraphics);
       this.hoverGraphics.setParent(this.pMain);
@@ -175,6 +176,27 @@ const LabelledPointsTrack = (HGC, ...args) => {
     this.animate();
   }
 
+    getLabelOffset(boxWidth, boxHeight, uid) {
+      const position = this.options.labelPosition || 'top-right';
+      let pos = position;
+      
+      if (position === 'random') {
+        if (!this.labelPositions[uid]) {
+          const positions = ['top-right', 'top-left', 'bottom-left', 'bottom-right'];
+          this.labelPositions[uid] = positions[Math.floor(Math.random() * 4)];
+        }
+        pos = this.labelPositions[uid];
+      }
+      
+      const offsets = {
+        'top-right': [0, -boxHeight],
+        'top-left': [-boxWidth, -boxHeight],
+        'bottom-left': [-boxWidth, 0],
+        'bottom-right': [0, 0]
+      };
+      return offsets[pos] || offsets['top-right'];
+    }
+
     getText(tile, point) {
       if (!this.texts) this.texts = {};
       if (!this.boxes) this.boxes = {};
@@ -223,6 +245,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
             delete this.boxes[point.uid];
             delete this.colors[point.uid];
             delete this.pointData[point.uid];
+            delete this.labelPositions[point.uid];
           }
         }
       } catch (err) {
@@ -275,18 +298,18 @@ const LabelledPointsTrack = (HGC, ...args) => {
 
         const text = this.getText(tile, point);
 
-        text.x = xPos;
-        text.y = yPos;
-
         const box = this.boxes[point.uid];
-
         const boxWidth = box[2] - box[0];
         const boxHeight = box[3] - box[1];
+        const [offsetX, offsetY] = this.getLabelOffset(boxWidth, boxHeight, point.uid);
 
-        box[0] = xPos;
-        box[1] = yPos;
-        box[2] = xPos + boxWidth;
-        box[3] = yPos + boxHeight;
+        text.x = xPos + offsetX;
+        text.y = yPos + offsetY;
+
+        box[0] = xPos + offsetX;
+        box[1] = yPos + offsetY;
+        box[2] = xPos + offsetX + boxWidth;
+        box[3] = yPos + offsetY + boxHeight;
       }
     }
 
@@ -457,11 +480,13 @@ LabelledPointsTrack.config = {
     'pointShape',
     'sizeField',
     'defaultSize',
+    'labelPosition',
   ],
   defaultOptions: {
     'pointShape': 'circle',
     'sizeField': null,
-    'defaultSize': POINT_WIDTH
+    'defaultSize': POINT_WIDTH,
+    'labelPosition': 'top-right'
   },
   optionsInfo: {
     pointShape: {
@@ -487,6 +512,16 @@ LabelledPointsTrack.config = {
         8: { value: 8, name: '8' },
         13: { value: 13, name: '13' },
         21: { value: 21, name: '21' },
+      },
+    },
+    labelPosition: {
+      name: 'Label Position',
+      inlineOptions: {
+        'top-right': { value: 'top-right', name: 'Top Right' },
+        'top-left': { value: 'top-left', name: 'Top Left' },
+        'bottom-left': { value: 'bottom-left', name: 'Bottom Left' },
+        'bottom-right': { value: 'bottom-right', name: 'Bottom Right' },
+        'random': { value: 'random', name: 'Random' },
       },
     },
   }
