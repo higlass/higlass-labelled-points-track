@@ -1,3 +1,7 @@
+v0.5.1
+
+- Fixed mouseover position on labelled points
+
 v0.5.0
 
 - Option to position labels in different locations

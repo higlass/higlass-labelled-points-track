@@ -26,6 +26,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
       this.colors = {};
       this.pointData = {};
       this.labelPositions = {};
+      this.pointPositions = {};
       this.hoverGraphics = new PIXI.Graphics();
       this.pMain.addChild(this.hoverGraphics);
       this.hoverGraphics.setParent(this.pMain);
@@ -141,10 +142,8 @@ const LabelledPointsTrack = (HGC, ...args) => {
     let closestUid = null;
     let minDistance = 5;
 
-    for (const uid in this.boxes) {
-      const box = this.boxes[uid];
-      const pointX = box[0];
-      const pointY = box[1];
+    for (const uid in this.pointPositions) {
+      const [pointX, pointY] = this.pointPositions[uid];
       const distance = Math.sqrt((trackX - pointX) ** 2 + (trackY - pointY) ** 2);
       
       if (distance < minDistance) {
@@ -163,13 +162,13 @@ const LabelledPointsTrack = (HGC, ...args) => {
     this.pMain.setChildIndex(this.hoverGraphics, this.pMain.children.length - 1);
     this.hoverGraphics.lineStyle(2, 0xff0000);
     for (const uid of uids) {
-      if (uid && this.boxes[uid] && this.pointData[uid]) {
-        const box = this.boxes[uid];
+      if (uid && this.pointPositions[uid] && this.pointData[uid]) {
+        const [pointX, pointY] = this.pointPositions[uid];
         const size = this.getPointSize(this.pointData[uid]);
         if (this.options.pointShape === 'circle') {
-          this.hoverGraphics.drawCircle(box[0], box[1], (size / 2) + 2);
+          this.hoverGraphics.drawCircle(pointX, pointY, (size / 2) + 2);
         } else {
-          this.hoverGraphics.drawRect(box[0] - (size / 2) - 2, box[1] - (size / 2) - 2, size + 4, size + 4);
+          this.hoverGraphics.drawRect(pointX - (size / 2) - 2, pointY - (size / 2) - 2, size + 4, size + 4);
         }
       }
     }
@@ -246,6 +245,7 @@ const LabelledPointsTrack = (HGC, ...args) => {
             delete this.colors[point.uid];
             delete this.pointData[point.uid];
             delete this.labelPositions[point.uid];
+            delete this.pointPositions[point.uid];
           }
         }
       } catch (err) {
@@ -310,6 +310,8 @@ const LabelledPointsTrack = (HGC, ...args) => {
         box[1] = yPos + offsetY;
         box[2] = xPos + offsetX + boxWidth;
         box[3] = yPos + offsetY + boxHeight;
+        
+        this.pointPositions[point.uid] = [xPos, yPos];
       }
     }
 
